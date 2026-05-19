@@ -20,20 +20,20 @@ export const staggerContainerHome = {
 }
 
 export const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 40 },
   show: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.5, ease: 'easeOut' }
+    transition: { type: 'spring', damping: 25, stiffness: 120 }
   }
 }
 
 export const fadeInDown = {
-  hidden: { opacity: 0, y: -30 },
+  hidden: { opacity: 0, y: -40 },
   show: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.5, ease: 'easeOut' }
+    transition: { type: 'spring', damping: 25, stiffness: 120 }
   }
 }
 
@@ -46,42 +46,42 @@ export const fadeIn = {
 }
 
 export const scaleIn = {
-  hidden: { opacity: 0, scale: 0.9 },
+  hidden: { opacity: 0, scale: 0.8 },
   show: { 
     opacity: 1, 
     scale: 1,
-    transition: { duration: 0.4, ease: 'easeOut' }
+    transition: { type: 'spring', damping: 20, stiffness: 200 }
   }
 }
 
 export const slideInLeft = {
-  hidden: { opacity: 0, x: -50 },
+  hidden: { opacity: 0, x: -60 },
   show: { 
     opacity: 1, 
     x: 0,
-    transition: { duration: 0.5, ease: 'easeOut' }
+    transition: { type: 'spring', damping: 25, stiffness: 120 }
   }
 }
 
 export const slideInRight = {
-  hidden: { opacity: 0, x: 50 },
+  hidden: { opacity: 0, x: 60 },
   show: { 
     opacity: 1, 
     x: 0,
-    transition: { duration: 0.5, ease: 'easeOut' }
+    transition: { type: 'spring', damping: 25, stiffness: 120 }
   }
 }
 
 export const cardHover = {
   rest: { scale: 1, y: 0 },
   hover: { 
-    scale: 1.02, 
-    y: -5,
-    transition: { duration: 0.3, ease: 'easeOut' }
+    scale: 1.03, 
+    y: -12,
+    transition: { type: 'spring', damping: 15, stiffness: 300 }
   }
 }
 
 export const buttonTap = {
   rest: { scale: 1 },
-  tap: { scale: 0.98 }
+  tap: { scale: 0.95 }
 }
