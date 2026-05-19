@@ -47,3 +47,7 @@ export function useScrollPosition() {
 
   return scrollY
 }
+
+export { useDebounce, useMediaQuery, useIsMobile, useIsTablet, useIsDesktop, useIsTouchDevice } from './useUtils'
+export { useProducts, useProductFilters, useRelatedProducts, useProductRecommendations } from './useProducts'
+export { useRecentlyViewed } from './useRecentlyViewed'

@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { sampleProducts, categories } from '../data/sampleData'
 import ProductCard from '../components/ProductCard'
+import QuickView from '../components/QuickView'
 import { ProductGridSkeleton } from '../components/Skeleton'
 import { Filter, X } from 'lucide-react'
 import { staggerContainer, fadeInUp } from '../utils/animationVariants'
@@ -14,6 +15,7 @@ function Shop() {
   const [priceRange, setPriceRange] = useState('all')
   const [showFilters, setShowFilters] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [quickViewProduct, setQuickViewProduct] = useState(null)
 
   useEffect(() => {
     setIsLoading(true)
@@ -192,13 +194,22 @@ function Shop() {
             <motion.div className="products-grid" variants={staggerContainer}>
               {products.map(product => (
                 <motion.div key={product.id} variants={fadeInUp}>
-                  <ProductCard product={product} />
+                  <ProductCard 
+                    product={product} 
+                    showQuickView={true}
+                    onQuickView={setQuickViewProduct}
+                  />
                 </motion.div>
               ))}
             </motion.div>
           )}
         </motion.div>
       </div>
+      <QuickView 
+        product={quickViewProduct} 
+        isOpen={!!quickViewProduct} 
+        onClose={() => setQuickViewProduct(null)}
+      />
     </motion.div>
   )
 }

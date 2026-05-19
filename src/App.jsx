@@ -1,37 +1,50 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { PricingProvider } from './context/PricingContext'
 import Header from './components/Header'
 import Footer from './components/Footer'
-import Home from './pages/Home'
-import Shop from './pages/Shop'
-import ProductDetail from './pages/ProductDetail'
-import Cart from './pages/Cart'
-import Checkout from './pages/Checkout'
-import Auth from './pages/Auth'
-import Account from './pages/Account'
 import CartDrawer from './components/CartDrawer'
 import WhatsAppButton from './components/WhatsAppButton'
 import ToastContainer from './components/Toast'
 import BackToTop from './components/BackToTop'
 import MobileBottomNav from './components/MobileBottomNav'
+import { ProductGridSkeleton } from './components/Skeleton'
+
+const Home = lazy(() => import('./pages/Home'))
+const Shop = lazy(() => import('./pages/Shop'))
+const ProductDetail = lazy(() => import('./pages/ProductDetail'))
+const Cart = lazy(() => import('./pages/Cart'))
+const Checkout = lazy(() => import('./pages/Checkout'))
+const Auth = lazy(() => import('./pages/Auth'))
+const Account = lazy(() => import('./pages/Account'))
+
+function PageLoader() {
+  return (
+    <div className="container" style={{ padding: '60px 0' }}>
+      <ProductGridSkeleton count={8} />
+    </div>
+  )
+}
 
 function AnimatedRoutes() {
   const location = useLocation()
 
   return (
     <AnimatePresence mode="wait" initial={false}>
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Home />} />
-        <Route path="/shop" element={<Shop />} />
-        <Route path="/shop/:category" element={<Shop />} />
-        <Route path="/product/:slug" element={<ProductDetail />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/account" element={<Account />} />
-      </Routes>
+      <Suspense fallback={<PageLoader />}>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<Home />} />
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/shop/:category" element={<Shop />} />
+          <Route path="/product/:slug" element={<ProductDetail />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/account" element={<Account />} />
+        </Routes>
+      </Suspense>
     </AnimatePresence>
   )
 }

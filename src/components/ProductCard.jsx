@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useCartStore } from '../store/cartStore'
@@ -5,10 +6,11 @@ import { useWishlistStore } from '../store/wishlistStore'
 import { usePricing } from '../context/PricingContext'
 import { useToastStore } from '../store/toastStore'
 import { formatNaira } from '../utils/priceUtils'
-import { Heart, ShoppingCart } from 'lucide-react'
+import { Heart, ShoppingCart, Eye } from 'lucide-react'
 import { cardHover } from '../utils/animationVariants'
 
-function ProductCard({ product }) {
+function ProductCard({ product, showQuickView, onQuickView }) {
+  const [isHovered, setIsHovered] = useState(false)
   const addItem = useCartStore(state => state.addItem)
   const isInWishlist = useWishlistStore(state => state.isInWishlist)
   const addItemToWishlist = useWishlistStore(state => state.addItem)
@@ -36,6 +38,12 @@ function ProductCard({ product }) {
     }
   }
 
+  const handleQuickView = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    onQuickView?.(product)
+  }
+
   const price = product.price
   const salePrice = product.sale_price
   const discount = salePrice ? Math.round(((price - salePrice) / price) * 100) : 0
@@ -46,6 +54,8 @@ function ProductCard({ product }) {
       whileHover="hover"
       animate="rest"
       variants={cardHover}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <Link to={`/product/${product.slug}`} className="product-card">
         <div className="product-image-wrapper">
@@ -57,6 +67,19 @@ function ProductCard({ product }) {
             {discount > 0 && <span className="badge badge-sale">-{discount}%</span>}
             {product.available_in_nigeria && <span className="badge badge-nigeria">Available in Nigeria</span>}
           </div>
+
+          {showQuickView && (
+            <motion.button 
+              className="quick-view-trigger"
+              onClick={handleQuickView}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isHovered ? 1 : 0 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <Eye size={18} />
+            </motion.button>
+          )}
 
           <motion.button 
             className={`wishlist-btn ${inWishlist ? 'active' : ''}`}

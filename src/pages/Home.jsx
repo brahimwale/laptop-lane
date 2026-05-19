@@ -1,11 +1,14 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { sampleProducts, categories } from '../data/sampleData'
 import ProductCard from '../components/ProductCard'
+import QuickView from '../components/QuickView'
 import { CheckCircle, Truck, RotateCcw, Headphones } from 'lucide-react'
 import { staggerContainer, fadeInUp, staggerContainerHome } from '../utils/animationVariants'
 
 function Home() {
+  const [quickViewProduct, setQuickViewProduct] = useState(null)
   const featuredProducts = sampleProducts.filter(p => p.is_featured).slice(0, 4)
   const bestSellers = sampleProducts.filter(p => p.is_best_seller).slice(0, 4)
   const newArrivals = sampleProducts.filter(p => p.is_new_arrival).slice(0, 4)
@@ -112,7 +115,11 @@ function Home() {
           <motion.div className="products-grid" variants={staggerContainer}>
             {featuredProducts.map(product => (
               <motion.div key={product.id} variants={fadeInUp}>
-                <ProductCard product={product} />
+                <ProductCard 
+                  product={product} 
+                  showQuickView={true}
+                  onQuickView={setQuickViewProduct}
+                />
               </motion.div>
             ))}
           </motion.div>
@@ -129,7 +136,11 @@ function Home() {
           <motion.div className="products-grid" variants={staggerContainer}>
             {bestSellers.map(product => (
               <motion.div key={product.id} variants={fadeInUp}>
-                <ProductCard product={product} />
+                <ProductCard 
+                  product={product} 
+                  showQuickView={true}
+                  onQuickView={setQuickViewProduct}
+                />
               </motion.div>
             ))}
           </motion.div>
@@ -146,7 +157,11 @@ function Home() {
           <motion.div className="products-grid" variants={staggerContainer}>
             {newArrivals.map(product => (
               <motion.div key={product.id} variants={fadeInUp}>
-                <ProductCard product={product} />
+                <ProductCard 
+                  product={product} 
+                  showQuickView={true}
+                  onQuickView={setQuickViewProduct}
+                />
               </motion.div>
             ))}
           </motion.div>
@@ -163,7 +178,11 @@ function Home() {
           <motion.div className="products-grid" variants={staggerContainer}>
             {onSale.map(product => (
               <motion.div key={product.id} variants={fadeInUp}>
-                <ProductCard product={product} />
+                <ProductCard 
+                  product={product} 
+                  showQuickView={true}
+                  onQuickView={setQuickViewProduct}
+                />
               </motion.div>
             ))}
           </motion.div>
@@ -214,6 +233,11 @@ function Home() {
           </motion.form>
         </div>
       </motion.section>
+      <QuickView 
+        product={quickViewProduct} 
+        isOpen={!!quickViewProduct} 
+        onClose={() => setQuickViewProduct(null)}
+      />
     </motion.div>
   )
 }
