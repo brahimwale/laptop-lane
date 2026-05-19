@@ -1,77 +1,94 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { sampleProducts, categories } from '../data/sampleData'
 import ProductCard from '../components/ProductCard'
+import { ProductGridSkeleton } from '../components/Skeleton'
+import { Filter, X } from 'lucide-react'
+import { staggerContainer, fadeInUp } from '../utils/animationVariants'
 
 function Shop() {
   const { category } = useParams()
-  const [products, setProducts] = useState(sampleProducts)
+  const [products, setProducts] = useState([])
   const [sortBy, setSortBy] = useState('default')
   const [priceRange, setPriceRange] = useState('all')
   const [showFilters, setShowFilters] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    let filtered = sampleProducts
+    setIsLoading(true)
+    const timer = setTimeout(() => {
+      let filtered = sampleProducts
+      
+      if (category) {
+        filtered = filtered.filter(p => p.category === category)
+      }
+      
+      if (priceRange === 'under500') {
+        filtered = filtered.filter(p => (p.sale_price || p.price) < 500)
+      } else if (priceRange === '500to1000') {
+        filtered = filtered.filter(p => (p.sale_price || p.price) >= 500 && (p.sale_price || p.price) <= 1000)
+      } else if (priceRange === '1000to2000') {
+        filtered = filtered.filter(p => (p.sale_price || p.price) >= 1000 && (p.sale_price || p.price) <= 2000)
+      } else if (priceRange === 'over2000') {
+        filtered = filtered.filter(p => (p.sale_price || p.price) > 2000)
+      }
+      
+      if (sortBy === 'price-low') {
+        filtered.sort((a, b) => (a.sale_price || a.price) - (b.sale_price || b.price))
+      } else if (sortBy === 'price-high') {
+        filtered.sort((a, b) => (b.sale_price || b.price) - (a.sale_price || a.price))
+      } else if (sortBy === 'rating') {
+        filtered.sort((a, b) => b.rating - a.rating)
+      } else if (sortBy === 'name') {
+        filtered.sort((a, b) => a.name.localeCompare(b.name))
+      }
+      
+      setProducts(filtered)
+      setIsLoading(false)
+    }, 500)
     
-    if (category) {
-      filtered = filtered.filter(p => p.category === category)
-    }
-    
-    // Apply price filter
-    if (priceRange === 'under500') {
-      filtered = filtered.filter(p => (p.sale_price || p.price) < 500)
-    } else if (priceRange === '500to1000') {
-      filtered = filtered.filter(p => (p.sale_price || p.price) >= 500 && (p.sale_price || p.price) <= 1000)
-    } else if (priceRange === '1000to2000') {
-      filtered = filtered.filter(p => (p.sale_price || p.price) >= 1000 && (p.sale_price || p.price) <= 2000)
-    } else if (priceRange === 'over2000') {
-      filtered = filtered.filter(p => (p.sale_price || p.price) > 2000)
-    }
-    
-    // Apply sorting
-    if (sortBy === 'price-low') {
-      filtered.sort((a, b) => (a.sale_price || a.price) - (b.sale_price || b.price))
-    } else if (sortBy === 'price-high') {
-      filtered.sort((a, b) => (b.sale_price || b.price) - (a.sale_price || a.price))
-    } else if (sortBy === 'rating') {
-      filtered.sort((a, b) => b.rating - a.rating)
-    } else if (sortBy === 'name') {
-      filtered.sort((a, b) => a.name.localeCompare(b.name))
-    }
-    
-    setProducts(filtered)
+    return () => clearTimeout(timer)
   }, [category, sortBy, priceRange])
 
   const currentCategory = categories.find(c => c.slug === category)
 
   return (
-    <div className="shop-page">
-      {/* Page Header */}
-      <div className="shop-header">
+    <motion.div 
+      className="shop-page"
+      initial="hidden"
+      animate="show"
+      variants={staggerContainer}
+    >
+      <motion.div className="shop-header" variants={fadeInUp}>
         <div className="container">
           <h1>{currentCategory ? currentCategory.name : 'All Products'}</h1>
           <p className="shop-subtitle">
-            {products.length} product{products.length !== 1 ? 's' : ''} found
+            {isLoading ? 'Loading...' : `${products.length} product${products.length !== 1 ? 's' : ''} found`}
           </p>
         </div>
-      </div>
+      </motion.div>
 
       <div className="container shop-content">
-        {/* Sidebar Filters */}
-        <aside className={`shop-sidebar ${showFilters ? 'open' : ''}`}>
-          <button className="close-filters" onClick={() => setShowFilters(false)}>×</button>
+        <motion.aside 
+          className={`shop-sidebar ${showFilters ? 'open' : ''}`}
+          variants={fadeInUp}
+        >
+          <button className="close-filters" onClick={() => setShowFilters(false)}>
+            <X size={24} />
+          </button>
           
           <div className="filter-section">
             <h3>Categories</h3>
             <ul className="category-list">
               <li>
-                <a href="/shop" className={!category ? 'active' : ''}>All Products</a>
+                <Link to="/shop" className={!category ? 'active' : ''}>All Products</Link>
               </li>
               {categories.map(cat => (
                 <li key={cat.id}>
-                  <a href={`/shop/${cat.slug}`} className={category === cat.slug ? 'active' : ''}>
+                  <Link to={`/shop/${cat.slug}`} className={category === cat.slug ? 'active' : ''}>
                     {cat.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -136,21 +153,18 @@ function Shop() {
           <div className="filter-section">
             <h3>Quick Filters</h3>
             <div className="quick-filters">
-              <a href="/shop/gaming-laptops" className="filter-tag">Gaming Laptops</a>
-              <a href="/shop/business-laptops" className="filter-tag">Business</a>
-              <a href="/shop/ultrabooks" className="filter-tag">Ultrabooks</a>
-              <a href="/shop/accessories" className="filter-tag">Accessories</a>
+              <Link to="/shop/gaming-laptops" className="filter-tag">Gaming Laptops</Link>
+              <Link to="/shop/business-laptops" className="filter-tag">Business</Link>
+              <Link to="/shop/ultrabooks" className="filter-tag">Ultrabooks</Link>
+              <Link to="/shop/accessories" className="filter-tag">Accessories</Link>
             </div>
           </div>
-        </aside>
+        </motion.aside>
 
-        {/* Product Grid */}
-        <div className="shop-main">
+        <motion.div className="shop-main" variants={fadeInUp}>
           <div className="shop-toolbar">
             <button className="filter-toggle-btn" onClick={() => setShowFilters(!showFilters)}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-              </svg>
+              <Filter size={20} />
               Filters
             </button>
             
@@ -166,22 +180,26 @@ function Shop() {
             </div>
           </div>
 
-          {products.length === 0 ? (
-            <div className="empty-results">
+          {isLoading ? (
+            <ProductGridSkeleton count={8} />
+          ) : products.length === 0 ? (
+            <motion.div className="empty-results" variants={fadeInUp}>
               <h3>No products found</h3>
               <p>Try adjusting your filters or browse all products.</p>
-              <a href="/shop" className="btn btn-primary">View All Products</a>
-            </div>
+              <Link to="/shop" className="btn btn-primary">View All Products</Link>
+            </motion.div>
           ) : (
-            <div className="products-grid">
+            <motion.div className="products-grid" variants={staggerContainer}>
               {products.map(product => (
-                <ProductCard key={product.id} product={product} />
+                <motion.div key={product.id} variants={fadeInUp}>
+                  <ProductCard product={product} />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           )}
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

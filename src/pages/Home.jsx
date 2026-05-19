@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { sampleProducts, categories } from '../data/sampleData'
 import ProductCard from '../components/ProductCard'
+import { CheckCircle, Truck, RotateCcw, Headphones } from 'lucide-react'
+import { staggerContainer, fadeInUp, staggerContainerHome } from '../utils/animationVariants'
 
 function Home() {
   const featuredProducts = sampleProducts.filter(p => p.is_featured).slice(0, 4)
@@ -9,19 +12,30 @@ function Home() {
   const onSale = sampleProducts.filter(p => p.sale_price).slice(0, 4)
 
   return (
-    <div className="home">
+    <motion.div 
+      className="home"
+      initial="hidden"
+      animate="show"
+      variants={staggerContainerHome}
+    >
       {/* Hero Section */}
-      <section className="hero">
+      <motion.section className="hero" variants={fadeInUp}>
         <div className="container hero-content">
-          <div className="hero-text">
-            <span className="hero-badge">✨ New Arrivals 2026</span>
-            <h1>Premium <span>Laptops</span> for Every Need</h1>
-            <p>Discover high-performance laptops and accessories designed for work, gaming, and creativity. Free shipping on orders over $500.</p>
-            <div className="hero-buttons">
-              <Link to="/shop" className="btn btn-primary">Shop Now →</Link>
+          <motion.div className="hero-text" variants={fadeInUp}>
+            <motion.span className="hero-badge" variants={fadeInUp}>
+              New Arrivals 2026
+            </motion.span>
+            <motion.h1 variants={fadeInUp}>
+              Premium <span>Laptops</span> for Every Need
+            </motion.h1>
+            <motion.p variants={fadeInUp}>
+              Discover high-performance laptops and accessories designed for work, gaming, and creativity. Free shipping on orders over $500.
+            </motion.p>
+            <motion.div className="hero-buttons" variants={fadeInUp}>
+              <Link to="/shop" className="btn btn-primary">Shop Now</Link>
               <Link to="/shop/gaming-laptops" className="btn btn-secondary">Explore Gaming</Link>
-            </div>
-            <div className="hero-stats">
+            </motion.div>
+            <motion.div className="hero-stats" variants={fadeInUp}>
               <div className="stat">
                 <span className="stat-number">10,000+</span>
                 <span className="stat-label">Happy Customers</span>
@@ -31,160 +45,176 @@ function Home() {
                 <span className="stat-label">Products</span>
               </div>
               <div className="stat">
-                <span className="stat-number">4.8★</span>
+                <span className="stat-number">4.8</span>
                 <span className="stat-label">Average Rating</span>
               </div>
-            </div>
-          </div>
-          <div className="hero-image">
-            <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&h=500&fit=crop" alt="Premium Laptop" />
-          </div>
+            </motion.div>
+          </motion.div>
+          <motion.div className="hero-image" variants={fadeInUp}>
+            <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&h=500&fit=crop" alt="Premium Laptop" loading="lazy" />
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Categories Showcase */}
-      <section className="categories-section">
+      <motion.section className="categories-section" variants={fadeInUp}>
         <div className="container">
-          <h2 className="section-title">Shop by <span>Category</span></h2>
-          <div className="categories-grid">
-            {categories.slice(0, 6).map(cat => (
-              <Link key={cat.id} to={`/shop/${cat.slug}`} className="category-card">
-                <div className="category-image">
-                  <img src={cat.image} alt={cat.name} />
-                </div>
-                <div className="category-overlay"></div>
-                <div className="category-arrow">→</div>
-                <div className="category-info">
-                  <h3>{cat.name}</h3>
-                  <p>{cat.description}</p>
-                </div>
-              </Link>
+          <motion.h2 className="section-title" variants={fadeInUp}>
+            Shop by <span>Category</span>
+          </motion.h2>
+          <motion.div className="categories-grid" variants={staggerContainer}>
+            {categories.slice(0, 6).map((cat, index) => (
+              <motion.div key={cat.id} variants={fadeInUp} custom={index}>
+                <Link to={`/shop/${cat.slug}`} className="category-card">
+                  <div className="category-image">
+                    <img src={cat.image} alt={cat.name} loading="lazy" />
+                  </div>
+                  <div className="category-overlay"></div>
+                  <div className="category-arrow">→</div>
+                  <div className="category-info">
+                    <h3>{cat.name}</h3>
+                    <p>{cat.description}</p>
+                  </div>
+                </Link>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Promotional Banner */}
-      <section className="promo-banner">
+      <motion.section className="promo-banner" variants={fadeInUp}>
         <div className="container promo-content">
-          <div className="promo-card">
-            <span className="promo-tag">🔥 Limited Offer</span>
+          <motion.div className="promo-card" variants={fadeInUp}>
+            <span className="promo-tag">Limited Offer</span>
             <h3>Gaming Laptops</h3>
             <p className="promo-price">From $1,899.99 <span className="original-price">$2,199.99</span></p>
             <p className="promo-desc">Save up to $300 on select gaming laptops</p>
-            <Link to="/shop/gaming-laptops" className="btn btn-primary">Shop Gaming →</Link>
-          </div>
-          <div className="promo-card">
-            <span className="promo-tag">✨ New Arrival</span>
+            <Link to="/shop/gaming-laptops" className="btn btn-primary">Shop Gaming</Link>
+          </motion.div>
+          <motion.div className="promo-card" variants={fadeInUp}>
+            <span className="promo-tag">New Arrival</span>
             <h3>Ultra Slim Series</h3>
             <p className="promo-price">Starting at $899.99</p>
             <p className="promo-desc">Lightweight powerhouses for professionals</p>
-            <Link to="/shop/ultrabooks" className="btn btn-primary">Explore Now →</Link>
-          </div>
+            <Link to="/shop/ultrabooks" className="btn btn-primary">Explore Now</Link>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Featured Products */}
-      <section className="products-section">
+      <motion.section className="products-section" variants={fadeInUp}>
         <div className="container">
-          <div className="section-header">
+          <motion.div className="section-header" variants={fadeInUp}>
             <h2 className="section-title">Featured Products</h2>
-            <Link to="/shop" className="view-all-link">View All →</Link>
-          </div>
-          <div className="products-grid">
+            <Link to="/shop" className="view-all-link">View All</Link>
+          </motion.div>
+          <motion.div className="products-grid" variants={staggerContainer}>
             {featuredProducts.map(product => (
-              <ProductCard key={product.id} product={product} />
+              <motion.div key={product.id} variants={fadeInUp}>
+                <ProductCard product={product} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Best Sellers */}
-      <section className="products-section bg-light">
+      <motion.section className="products-section bg-light" variants={fadeInUp}>
         <div className="container">
-          <div className="section-header">
+          <motion.div className="section-header" variants={fadeInUp}>
             <h2 className="section-title">Best Sellers</h2>
-            <Link to="/shop" className="view-all-link">View All →</Link>
-          </div>
-          <div className="products-grid">
+            <Link to="/shop" className="view-all-link">View All</Link>
+          </motion.div>
+          <motion.div className="products-grid" variants={staggerContainer}>
             {bestSellers.map(product => (
-              <ProductCard key={product.id} product={product} />
+              <motion.div key={product.id} variants={fadeInUp}>
+                <ProductCard product={product} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* New Arrivals */}
-      <section className="products-section">
+      <motion.section className="products-section" variants={fadeInUp}>
         <div className="container">
-          <div className="section-header">
+          <motion.div className="section-header" variants={fadeInUp}>
             <h2 className="section-title">New Arrivals</h2>
-            <Link to="/shop" className="view-all-link">View All →</Link>
-          </div>
-          <div className="products-grid">
+            <Link to="/shop" className="view-all-link">View All</Link>
+          </motion.div>
+          <motion.div className="products-grid" variants={staggerContainer}>
             {newArrivals.map(product => (
-              <ProductCard key={product.id} product={product} />
+              <motion.div key={product.id} variants={fadeInUp}>
+                <ProductCard product={product} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* On Sale */}
-      <section className="products-section bg-light">
+      <motion.section className="products-section bg-light" variants={fadeInUp}>
         <div className="container">
-          <div className="section-header">
-            <h2 className="section-title">🔥 Hot Deals</h2>
-            <Link to="/shop" className="view-all-link">View All →</Link>
-          </div>
-          <div className="products-grid">
+          <motion.div className="section-header" variants={fadeInUp}>
+            <h2 className="section-title">Hot Deals</h2>
+            <Link to="/shop" className="view-all-link">View All</Link>
+          </motion.div>
+          <motion.div className="products-grid" variants={staggerContainer}>
             {onSale.map(product => (
-              <ProductCard key={product.id} product={product} />
+              <motion.div key={product.id} variants={fadeInUp}>
+                <ProductCard product={product} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Why Choose Us */}
-      <section className="why-choose-us">
+      <motion.section className="why-choose-us" variants={fadeInUp}>
         <div className="container">
-          <h2 className="section-title">Why Choose <span>LaptopLane</span>?</h2>
-          <div className="features-grid">
-            <div className="feature-card">
-              <div className="feature-icon">✓</div>
+          <motion.h2 className="section-title" variants={fadeInUp}>
+            Why Choose <span>LaptopLane</span>?
+          </motion.h2>
+          <motion.div className="features-grid" variants={staggerContainer}>
+            <motion.div className="feature-card" variants={fadeInUp}>
+              <div className="feature-icon"><CheckCircle size={40} /></div>
               <h3>Quality Guaranteed</h3>
               <p>Every product is tested and certified to meet the highest quality standards.</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">🚀</div>
+            </motion.div>
+            <motion.div className="feature-card" variants={fadeInUp}>
+              <div className="feature-icon"><Truck size={40} /></div>
               <h3>Fast Shipping</h3>
               <p>Free express shipping on orders over $500. Delivered to your doorstep.</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">↩️</div>
+            </motion.div>
+            <motion.div className="feature-card" variants={fadeInUp}>
+              <div className="feature-icon"><RotateCcw size={40} /></div>
               <h3>30-Day Returns</h3>
               <p>Not satisfied? Return within 30 days for a full refund, no questions asked.</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">🎧</div>
+            </motion.div>
+            <motion.div className="feature-card" variants={fadeInUp}>
+              <div className="feature-icon"><Headphones size={40} /></div>
               <h3>Expert Support</h3>
               <p>Our tech experts are available 24/7 to help you choose the right product.</p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Newsletter */}
-      <section className="newsletter-section">
+      <motion.section className="newsletter-section" variants={fadeInUp}>
         <div className="container newsletter-content">
-          <h2>Stay Updated</h2>
-          <p>Subscribe to our newsletter for exclusive deals, new arrivals, and tech tips.</p>
-          <form className="newsletter-form-large">
+          <motion.h2 variants={fadeInUp}>Stay Updated</motion.h2>
+          <motion.p variants={fadeInUp}>
+            Subscribe to our newsletter for exclusive deals, new arrivals, and tech tips.
+          </motion.p>
+          <motion.form className="newsletter-form-large" variants={fadeInUp}>
             <input type="email" placeholder="Enter your email address" />
             <button type="submit">Subscribe Now</button>
-          </form>
+          </motion.form>
         </div>
-      </section>
-    </div>
+      </motion.section>
+    </motion.div>
   )
 }
 

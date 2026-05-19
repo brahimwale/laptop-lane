@@ -1,5 +1,158 @@
 export const sampleProducts = [
-  ...nigerianProducts,
+  {
+    id: 'ng-1',
+    name: 'Tecno Megabook T1',
+    slug: 'tecno-megabook-t1',
+    description: '15.6" FHD display, Intel Core i5, 16GB RAM, 512GB SSD. Premium Nigerian brand laptop with sleek design and powerful performance.',
+    price: 899.99,
+    sale_price: 749.99,
+    sku: 'TC-MEGABOOK-T1',
+    stock_quantity: 35,
+    category: 'nigerian-brands',
+    brand: 'Tecno',
+    images: [
+      'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600',
+      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600'
+    ],
+    specifications: {
+      'Processor': 'Intel Core i5-1235U',
+      'RAM': '16GB DDR4',
+      'Storage': '512GB NVMe SSD',
+      'Display': '15.6" FHD IPS',
+      'Battery': 'Up to 12 hours',
+      'Weight': '1.6 kg'
+    },
+    is_featured: true,
+    is_best_seller: true,
+    is_new_arrival: true,
+    rating: 4.5,
+    review_count: 67,
+    available_in_nigeria: true,
+    local_warranty: '1 Year Local Warranty'
+  },
+  {
+    id: 'ng-2',
+    name: 'Infinix Inbook X2',
+    slug: 'infinix-inbook-x2',
+    description: '14" FHD display, Intel Core i7, 16GB RAM, 512GB SSD. Stylish and powerful laptop from popular Nigerian brand.',
+    price: 1099.99,
+    sale_price: 899.99,
+    sku: 'INF-INBOOK-X2',
+    stock_quantity: 25,
+    category: 'nigerian-brands',
+    brand: 'Infinix',
+    images: [
+      'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=600',
+      'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600'
+    ],
+    specifications: {
+      'Processor': 'Intel Core i7-1165G7',
+      'RAM': '16GB DDR4',
+      'Storage': '512GB NVMe SSD',
+      'Display': '14" FHD IPS',
+      'Battery': 'Up to 11 hours',
+      'Weight': '1.4 kg'
+    },
+    is_featured: true,
+    is_best_seller: true,
+    is_new_arrival: false,
+    rating: 4.6,
+    review_count: 89,
+    available_in_nigeria: true,
+    local_warranty: '1 Year Local Warranty'
+  },
+  {
+    id: 'ng-3',
+    name: 'Itel S15 Pro',
+    slug: 'itel-s15-pro',
+    description: 'Budget-friendly 15.6" laptop perfect for students. Intel Celeron, 8GB RAM, 256GB SSD.',
+    price: 399.99,
+    sale_price: 349.99,
+    sku: 'ITL-S15-PRO',
+    stock_quantity: 50,
+    category: 'nigerian-brands',
+    brand: 'Itel',
+    images: [
+      'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600'
+    ],
+    specifications: {
+      'Processor': 'Intel Celeron N4020',
+      'RAM': '8GB DDR4',
+      'Storage': '256GB SSD',
+      'Display': '15.6" HD',
+      'Battery': 'Up to 6 hours',
+      'Weight': '1.8 kg'
+    },
+    is_featured: false,
+    is_best_seller: false,
+    is_new_arrival: true,
+    rating: 4.2,
+    review_count: 156,
+    available_in_nigeria: true,
+    local_warranty: '1 Year Local Warranty'
+  },
+  {
+    id: 'ng-4',
+    name: 'Dell Latitude 3520 - Refurbished',
+    slug: 'dell-latitude-3520-refurb',
+    description: 'Certified refurbished Dell business laptop. Intel Core i5, 16GB RAM, 256GB SSD. Like new condition with 6-month warranty.',
+    price: 449.99,
+    sale_price: 379.99,
+    sku: 'DL-LAT3520-RF',
+    stock_quantity: 40,
+    category: 'refurbished-laptops',
+    brand: 'Dell',
+    images: [
+      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600'
+    ],
+    specifications: {
+      'Processor': 'Intel Core i5-1135G7',
+      'RAM': '16GB DDR4',
+      'Storage': '256GB SSD',
+      'Display': '15.6" FHD',
+      'Battery': 'Up to 8 hours',
+      'Weight': '1.78 kg'
+    },
+    is_featured: true,
+    is_best_seller: true,
+    is_new_arrival: false,
+    rating: 4.4,
+    review_count: 234,
+    available_in_nigeria: true,
+    local_warranty: '6-Month Warranty',
+    condition: 'Refurbished - Grade A'
+  },
+  {
+    id: 'ng-5',
+    name: 'HP EliteBook 840 G7 - Refurbished',
+    slug: 'hp-elitebook-840-g7-refurb',
+    description: 'Premium business laptop, professionally refurbished. Intel Core i7, 16GB RAM, 512GB SSD. Excellent condition.',
+    price: 699.99,
+    sale_price: 599.99,
+    sku: 'HP-EL840G7-RF',
+    stock_quantity: 20,
+    category: 'refurbished-laptops',
+    brand: 'HP',
+    images: [
+      'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600'
+    ],
+    specifications: {
+      'Processor': 'Intel Core i7-10610U',
+      'RAM': '16GB DDR4',
+      'Storage': '512GB NVMe SSD',
+      'Display': '14" FHD',
+      'Battery': 'Up to 10 hours',
+      'Weight': '1.33 kg'
+    },
+    is_featured: false,
+    is_best_seller: true,
+    is_new_arrival: true,
+    rating: 4.7,
+    review_count: 89,
+    available_in_nigeria: true,
+    local_warranty: '6-Month Warranty',
+    condition: 'Refurbished - Grade A'
+  },
   {
     id: '1',
     name: 'LaptopLane Pro 15',

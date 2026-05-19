@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useCartStore } from '../store/cartStore'
 import { supabase } from '../lib/supabase'
 import { categories } from '../data/sampleData'
+import { ShoppingCart, User, Phone, Menu, X } from 'lucide-react'
+import SearchBar from './SearchBar'
 
 function Header({ onCartClick, onAuthClick }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -33,7 +35,11 @@ function Header({ onCartClick, onAuthClick }) {
       {/* Announcement Bar */}
       <div className="announcement-bar">
         <div className="container">
-          <span>🇳🇬 Nigeria's Trusted Laptop Store | 📞 Call/WhatsApp: 0801 234 5678 | 🚚 Free Delivery in Lagos</span>
+          <span>Nigeria's Trusted Laptop Store</span>
+          <span className="separator">|</span>
+          <span>Call/WhatsApp: 0801 234 5678</span>
+          <span className="separator">|</span>
+          <span>Free Delivery in Lagos</span>
         </div>
       </div>
 
@@ -46,62 +52,39 @@ function Header({ onCartClick, onAuthClick }) {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
           >
-            <span></span>
-            <span></span>
-            <span></span>
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
 
           {/* Logo */}
           <Link to="/" className="logo">
-            <span className="logo-icon">💻</span>
             <span className="logo-text">Laptop<span className="logo-accent">Lane</span><span className="logo-ng">NG</span></span>
           </Link>
 
           {/* Search Bar */}
-          <div className="search-bar">
-            <input type="text" placeholder="Search laptops, accessories, and more..." />
-            <button aria-label="Search">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.35-4.35"></path>
-              </svg>
-            </button>
-          </div>
+          <SearchBar />
 
           {/* Header Actions */}
           <div className="header-actions">
             <a href="tel:+2348012345678" className="call-order-btn">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
-              </svg>
-              Call to Order
+              <Phone size={18} />
+              <span>Call to Order</span>
             </a>
             {user ? (
               <div className="user-menu">
                 <Link to="/account" className="user-link">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                  </svg>
+                  <User size={22} />
                   <span>Account</span>
                 </Link>
                 <button onClick={handleSignOut} className="signout-btn">Sign Out</button>
               </div>
             ) : (
               <button className="header-action-btn" onClick={onAuthClick}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
+                <User size={22} />
                 <span>Sign In</span>
               </button>
             )}
             <button className="header-action-btn cart-btn" onClick={onCartClick}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="9" cy="21" r="1"></circle>
-                <circle cx="20" cy="21" r="1"></circle>
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-              </svg>
+              <ShoppingCart size={22} />
               <span>Cart</span>
               {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}
             </button>
@@ -117,12 +100,7 @@ function Header({ onCartClick, onAuthClick }) {
             onMouseEnter={() => setMegaMenuOpen(true)}
             onMouseLeave={() => setMegaMenuOpen(false)}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="3" y="3" width="7" height="7"></rect>
-              <rect x="14" y="3" width="7" height="7"></rect>
-              <rect x="14" y="14" width="7" height="7"></rect>
-              <rect x="3" y="14" width="7" height="7"></rect>
-            </svg>
+            <Menu size={20} />
             All Categories
           </button>
           
@@ -165,7 +143,9 @@ function Header({ onCartClick, onAuthClick }) {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="mobile-menu">
-          <button className="close-menu" onClick={() => setMobileMenuOpen(false)}>×</button>
+          <button className="close-menu" onClick={() => setMobileMenuOpen(false)}>
+              <X size={24} />
+            </button>
           <ul>
             <li><Link to="/" onClick={() => setMobileMenuOpen(false)}>Home</Link></li>
             <li><Link to="/shop" onClick={() => setMobileMenuOpen(false)}>Shop All</Link></li>

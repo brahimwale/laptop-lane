@@ -1,10 +1,18 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { sampleProducts } from '../data/sampleData'
 import { useCartStore } from '../store/cartStore'
 import { useWishlistStore } from '../store/wishlistStore'
 import { usePricing } from '../context/PricingContext'
+import { useToastStore } from '../store/toastStore'
+import { useRecentlyViewed } from '../hooks/useRecentlyViewed'
 import { formatNaira } from '../utils/priceUtils'
+import { Heart, ShoppingCart, Truck, RotateCcw, Shield, CheckCircle, XCircle } from 'lucide-react'
+import { ProductDetailSkeleton } from '../components/Skeleton'
+import { staggerContainer, fadeInUp } from '../utils/animationVariants'
+import Breadcrumbs from '../components/Breadcrumbs'
+import ProductCard from '../components/ProductCard'
 
 function ProductDetail() {
   const { slug } = useParams()
@@ -12,41 +20,70 @@ function ProductDetail() {
   const [quantity, setQuantity] = useState(1)
   const [selectedImage, setSelectedImage] = useState(0)
   const [activeTab, setActiveTab] = useState('description')
+  const [isLoading, setIsLoading] = useState(true)
   const addItem = useCartStore(state => state.addItem)
   const isInWishlist = useWishlistStore(state => state.isInWishlist)
   const addItemToWishlist = useWishlistStore(state => state.addItem)
   const removeItemFromWishlist = useWishlistStore(state => state.removeItem)
   const { exchangeRate } = usePricing()
+  const success = useToastStore(state => state.success)
+  const { recentProducts, addToRecentlyViewed } = useRecentlyViewed()
   const inWishlist = product ? isInWishlist(product.id) : false
 
   useEffect(() => {
-    const found = sampleProducts.find(p => p.slug === slug)
-    if (found) {
-      setProduct(found)
-      setSelectedImage(0)
-    }
+    setIsLoading(true)
     window.scrollTo(0, 0)
-  }, [slug])
+    
+    const timer = setTimeout(() => {
+      const found = sampleProducts.find(p => p.slug === slug)
+      if (found) {
+        setProduct(found)
+        setSelectedImage(0)
+        addToRecentlyViewed(found.id)
+      }
+      setIsLoading(false)
+    }, 600)
+    
+    return () => clearTimeout(timer)
+  }, [slug, addToRecentlyViewed])
+
+  if (isLoading) {
+    return (
+      <div className="product-detail-page">
+        <div className="container">
+          <ProductDetailSkeleton />
+        </div>
+      </div>
+    )
+  }
 
   if (!product) {
     return (
-      <div className="container not-found">
+      <motion.div 
+        className="container not-found"
+        initial="hidden"
+        animate="show"
+        variants={fadeInUp}
+      >
         <h2>Product Not Found</h2>
         <p>The product you're looking for doesn't exist.</p>
         <Link to="/shop" className="btn btn-primary">Back to Shop</Link>
-      </div>
+      </motion.div>
     )
   }
 
   const handleAddToCart = () => {
     addItem(product, quantity)
+    success(`${product.name} added to cart`)
   }
 
   const handleWishlistToggle = () => {
     if (inWishlist) {
       removeItemFromWishlist(product.id)
+      success(`Removed from wishlist`)
     } else {
       addItemToWishlist(product)
+      success(`Added to wishlist`)
     }
   }
 
@@ -59,55 +96,63 @@ function ProductDetail() {
     .slice(0, 4)
 
   return (
-    <div className="product-detail-page">
+    <motion.div 
+      className="product-detail-page"
+      initial="hidden"
+      animate="show"
+      variants={staggerContainer}
+    >
       <div className="container">
-        {/* Breadcrumbs */}
-        <div className="breadcrumbs">
+        <motion.div className="breadcrumbs" variants={fadeInUp}>
           <Link to="/">Home</Link> / <Link to="/shop">Shop</Link> / <span>{product.name}</span>
-        </div>
+        </motion.div>
 
-        {/* Product Main */}
-        <div className="product-main">
-          {/* Image Gallery */}
-          <div className="product-gallery">
+        <motion.div className="product-main" variants={fadeInUp}>
+          <motion.div className="product-gallery" variants={fadeInUp}>
             <div className="main-image">
               <img src={product.images[selectedImage]} alt={product.name} />
               {discount > 0 && <span className="sale-badge">-{discount}% OFF</span>}
             </div>
             {product.images.length > 1 && (
-              <div className="thumbnail-list">
+              <motion.div className="thumbnail-list" variants={staggerContainer}>
                 {product.images.map((img, idx) => (
-                  <button
+                  <motion.button
                     key={idx}
                     className={`thumbnail ${selectedImage === idx ? 'active' : ''}`}
                     onClick={() => setSelectedImage(idx)}
+                    variants={fadeInUp}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                   >
-                    <img src={img} alt={`${product.name} view ${idx + 1}`} />
-                  </button>
+                    <img src={img} alt={`${product.name} view ${idx + 1}`} loading="lazy" />
+                  </motion.button>
                 ))}
-              </div>
+              </motion.div>
             )}
-          </div>
+          </motion.div>
 
-          {/* Product Info */}
-          <div className="product-info-detail">
-            <div className="product-header">
+          <motion.div className="product-info-detail" variants={fadeInUp}>
+            <motion.div className="product-header" variants={fadeInUp}>
               {product.is_new_arrival && <span className="badge-new">New Arrival</span>}
               {product.is_best_seller && <span className="badge-best">Best Seller</span>}
-            </div>
+            </motion.div>
             
-            <h1>{product.name}</h1>
+            <motion.h1 variants={fadeInUp}>{product.name}</motion.h1>
             
-            <div className="product-meta">
+            <motion.div className="product-meta" variants={fadeInUp}>
               <div className="product-rating-detail">
-                <span className="stars-large">{'★'.repeat(Math.floor(product.rating))}{'☆'.repeat(5 - Math.floor(product.rating))}</span>
+                <div className="stars">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} className={i < Math.floor(product.rating) ? 'star filled' : 'star'}>★</span>
+                  ))}
+                </div>
                 <span>{product.rating}</span>
                 <span className="review-count">({product.review_count} reviews)</span>
               </div>
               <span className="sku">SKU: {product.sku}</span>
-            </div>
+            </motion.div>
 
-            <div className="product-price-detail">
+            <motion.div className="product-price-detail" variants={fadeInUp}>
               {salePrice ? (
                 <>
                   <span className="sale-price-large">{formatNaira(salePrice, exchangeRate)}</span>
@@ -117,82 +162,105 @@ function ProductDetail() {
               ) : (
                 <span className="price-large">{formatNaira(price, exchangeRate)}</span>
               )}
-            </div>
+            </motion.div>
 
-            <p className="product-description-detail">{product.description}</p>
+            <motion.p className="product-description-detail" variants={fadeInUp}>
+              {product.description}
+            </motion.p>
 
-            <div className="product-actions">
+            <motion.div className="product-actions" variants={fadeInUp}>
               <div className="quantity-selector">
                 <label>Quantity:</label>
                 <div className="quantity-controls">
-                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</button>
+                  <motion.button 
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    -
+                  </motion.button>
                   <span>{quantity}</span>
-                  <button onClick={() => setQuantity(quantity + 1)}>+</button>
+                  <motion.button 
+                    onClick={() => setQuantity(quantity + 1)}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    +
+                  </motion.button>
                 </div>
               </div>
 
               <div className="action-buttons">
-                <button className="btn-add-to-cart" onClick={handleAddToCart}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                  </svg>
+                <motion.button 
+                  className="btn-add-to-cart" 
+                  onClick={handleAddToCart}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <ShoppingCart size={20} />
                   Add to Cart
-                </button>
-                <button className={`btn-wishlist ${inWishlist ? 'active' : ''}`} onClick={handleWishlistToggle}>
-                  {inWishlist ? '❤️' : '🤍'}
-                </button>
+                </motion.button>
+                <motion.button 
+                  className={`btn-wishlist ${inWishlist ? 'active' : ''}`} 
+                  onClick={handleWishlistToggle}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <Heart size={20} />
+                </motion.button>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="product-stock-status">
+            <motion.div className="product-stock-status" variants={fadeInUp}>
               {product.stock_quantity > 0 ? (
-                <span className="in-stock">✓ In Stock ({product.stock_quantity} available)</span>
+                <span className="in-stock"><CheckCircle size={16} /> In Stock ({product.stock_quantity} available)</span>
               ) : (
-                <span className="out-of-stock">✗ Out of Stock</span>
+                <span className="out-of-stock"><XCircle size={16} /> Out of Stock</span>
               )}
-            </div>
+            </motion.div>
 
-            {/* Trust Badges */}
-            <div className="trust-badges-detail">
+            <motion.div className="trust-badges-detail" variants={fadeInUp}>
               <div className="trust-item">
-                <span>🚚</span>
+                <Truck size={20} />
                 <span>Free Delivery in Lagos</span>
               </div>
               <div className="trust-item">
-                <span>↩️</span>
+                <RotateCcw size={20} />
                 <span>7-Day Returns</span>
               </div>
               <div className="trust-item">
-                <span>🛡️</span>
+                <Shield size={20} />
                 <span>{product.local_warranty || '1-Year Warranty'}</span>
               </div>
               {product.available_in_nigeria && (
                 <div className="trust-item nigeria-badge">
-                  <span>🇳🇬</span>
                   <span>Available in Nigeria</span>
                 </div>
               )}
-            </div>
-          </div>
-        </div>
+            </motion.div>
+          </motion.div>
+        </motion.div>
 
-        {/* Tabs */}
-        <div className="product-tabs">
+        <motion.div className="product-tabs" variants={fadeInUp}>
           <div className="tab-buttons">
-            <button className={`tab-btn ${activeTab === 'description' ? 'active' : ''}`} onClick={() => setActiveTab('description')}>
+            <button 
+              className={`tab-btn ${activeTab === 'description' ? 'active' : ''}`} 
+              onClick={() => setActiveTab('description')}
+            >
               Description
             </button>
-            <button className={`tab-btn ${activeTab === 'specifications' ? 'active' : ''}`} onClick={() => setActiveTab('specifications')}>
+            <button 
+              className={`tab-btn ${activeTab === 'specifications' ? 'active' : ''}`} 
+              onClick={() => setActiveTab('specifications')}
+            >
               Specifications
             </button>
-            <button className={`tab-btn ${activeTab === 'reviews' ? 'active' : ''}`} onClick={() => setActiveTab('reviews')}>
+            <button 
+              className={`tab-btn ${activeTab === 'reviews' ? 'active' : ''}`} 
+              onClick={() => setActiveTab('reviews')}
+            >
               Reviews ({product.review_count})
             </button>
           </div>
 
-          <div className="tab-content">
+          <motion.div className="tab-content" variants={fadeInUp} key={activeTab}>
             {activeTab === 'description' && (
               <div className="tab-panel">
                 <h3>Product Description</h3>
@@ -228,46 +296,43 @@ function ProductDetail() {
                 <div className="reviews-summary">
                   <div className="rating-big">
                     <span className="rating-number">{product.rating}</span>
-                    <span className="rating-stars">{'★'.repeat(Math.floor(product.rating))}</span>
+                    <div className="stars">
+                      {[...Array(5)].map((_, i) => (
+                        <span key={i} className={i < Math.floor(product.rating) ? 'star filled' : 'star'}>★</span>
+                      ))}
+                    </div>
                     <span className="rating-total">out of 5 • {product.review_count} reviews</span>
                   </div>
                 </div>
                 <p className="reviews-note">Reviews from verified buyers</p>
               </div>
             )}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
-        {/* Related Products */}
         {relatedProducts.length > 0 && (
-          <section className="related-products">
+          <motion.section className="related-products" variants={fadeInUp}>
             <h2>You May Also Like</h2>
             <div className="products-grid">
               {relatedProducts.map(p => (
-                <Link key={p.id} to={`/product/${p.slug}`} className="product-card">
-                  <div className="product-image-wrapper">
-                    <img src={p.images[0]} alt={p.name} className="product-image" />
-                  </div>
-                  <div className="product-info">
-                    <h3 className="product-name">{p.name}</h3>
-                    <div className="product-price">
-                      {p.salePrice ? (
-                        <>
-                          <span className="sale-price">${p.salePrice.toFixed(2)}</span>
-                          <span className="original-price">${p.price.toFixed(2)}</span>
-                        </>
-                      ) : (
-                        <span className="price">${p.price.toFixed(2)}</span>
-                      )}
-                    </div>
-                  </div>
-                </Link>
+                <ProductCard key={p.id} product={p} />
               ))}
             </div>
-          </section>
+          </motion.section>
+        )}
+
+        {recentProducts.length > 0 && (
+          <motion.section className="recently-viewed" variants={fadeInUp}>
+            <h2>Recently Viewed</h2>
+            <div className="recently-viewed-grid">
+              {recentProducts.slice(0, 5).map(p => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          </motion.section>
         )}
       </div>
-    </div>
+    </motion.div>
   )
 }
 
