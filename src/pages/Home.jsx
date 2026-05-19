@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { sampleProducts, categories } from '../data/sampleData'
 import ProductCard from '../components/ProductCard'
 import QuickView from '../components/QuickView'
-import { CheckCircle, Truck, RotateCcw, Headphones } from 'lucide-react'
+import { CheckCircle, Truck, RotateCcw, Headphones, ArrowRight } from 'lucide-react'
 import { staggerContainer, fadeInUp, staggerContainerHome } from '../utils/animationVariants'
 import { useToastStore } from '../store/toastStore'
 
@@ -84,7 +84,9 @@ function Home() {
                     <img src={cat.image} alt={cat.name} loading="lazy" />
                   </div>
                   <div className="category-overlay"></div>
-                  <div className="category-arrow">→</div>
+                  <div className="category-arrow">
+                    <ArrowRight size={20} color="#1e40af" />
+                  </div>
                   <div className="category-info">
                     <h3>{cat.name}</h3>
                     <p>{cat.description}</p>
