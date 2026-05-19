@@ -2,7 +2,10 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCartStore } from '../store/cartStore'
 import { usePricing } from '../context/PricingContext'
+import { useToastStore } from '../store/toastStore'
+import { motion } from 'framer-motion'
 import { formatNaira } from '../utils/priceUtils'
+import { ShoppingBag, Trash2, Truck, Shield, RotateCcw, Lock } from 'lucide-react'
 
 const NIGERIAN_STATES = [
   { id: 'lagos', name: 'Lagos', shipping: 2500, freeShippingThreshold: 300000 },
@@ -22,6 +25,7 @@ function Cart() {
   const getSubtotal = useCartStore(state => state.getSubtotal)
   const clearCart = useCartStore(state => state.clearCart)
   const { exchangeRate } = usePricing()
+  const success = useToastStore(state => state.success)
   const [selectedState, setSelectedState] = useState('lagos')
 
   const subtotal = getSubtotal()
@@ -30,20 +34,31 @@ function Cart() {
   const tax = subtotal * 0.075
   const total = subtotal + shipping + tax
 
+  const handleRemove = (item) => {
+    removeItem(item.id)
+    success(`${item.name} removed from cart`)
+  }
+
+  const handleClearCart = () => {
+    clearCart()
+    success('Cart cleared')
+  }
+
   if (items.length === 0) {
     return (
-      <div className="container empty-cart-page">
+      <motion.div 
+        className="container empty-cart-page"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <div className="empty-state">
-          <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <circle cx="9" cy="21" r="1"></circle>
-            <circle cx="20" cy="21" r="1"></circle>
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-          </svg>
+          <ShoppingBag size={100} strokeWidth={1.5} />
           <h2>Your Cart is Empty</h2>
           <p>Looks like you haven't added anything to your cart yet.</p>
           <Link to="/shop" className="btn btn-primary">Start Shopping</Link>
         </div>
-      </div>
+      </motion.div>
     )
   }
 
@@ -88,18 +103,17 @@ function Cart() {
                   {formatNaira((item.sale_price || item.price) * item.quantity, exchangeRate)}
                 </div>
                 
-                <button className="cart-item-remove" onClick={() => removeItem(item.id)}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polyline points="3 6 5 6 21 6"></polyline>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                  </svg>
+                <button className="cart-item-remove" onClick={() => handleRemove(item)}>
+                  <Trash2 size={20} />
                 </button>
               </div>
             ))}
 
             <div className="cart-actions">
               <Link to="/shop" className="btn btn-outline">Continue Shopping</Link>
-              <button className="btn btn-danger" onClick={clearCart}>Clear Cart</button>
+              <motion.button className="btn btn-danger" onClick={handleClearCart}>
+                Clear Cart
+              </motion.button>
             </div>
           </div>
 
@@ -107,7 +121,7 @@ function Cart() {
             <h2>Cart Summary</h2>
             
             <div className="nigeria-shipping-section">
-              <h4>🇳🇬 Delivery Location</h4>
+              <h4><Truck size={18} /> Delivery Location</h4>
               <select 
                 value={selectedState} 
                 onChange={(e) => setSelectedState(e.target.value)}
@@ -160,11 +174,11 @@ function Cart() {
 
             <div className="cart-trust-badges">
               <div className="trust-mini">
-                <span>🔒</span>
+                <Lock size={16} />
                 <span>Secure Checkout</span>
               </div>
               <div className="trust-mini">
-                <span>↩️</span>
+                <RotateCcw size={16} />
                 <span>30-Day Returns</span>
               </div>
             </div>

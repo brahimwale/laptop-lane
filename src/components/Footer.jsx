@@ -102,14 +102,14 @@ function Footer() {
           <div className="footer-section">
             <h3>Contact Us</h3>
             <ul className="contact-info">
-              <li><MapPin size={16} /> 123 Tech Street, Silicon Valley, CA 94025</li>
-              <li><Phone size={16} /> <a href="tel:+18000900980">+1 (800) 090-0980</a></li>
-              <li><Mail size={16} /> <a href="mailto:support@laptoplane.com">support@laptoplane.com</a></li>
+              <li><MapPin size={16} /> 15 Admiralty Way, Lekki Phase 1, Lagos</li>
+              <li><Phone size={16} /> <a href="tel:+2348012345678">0801 234 5678</a></li>
+              <li><Mail size={16} /> <a href="mailto:hello@laptoplane.ng">hello@laptoplane.ng</a></li>
             </ul>
             <div className="newsletter">
               <h4>Subscribe to Newsletter</h4>
-              <form className="newsletter-form">
-                <input type="email" placeholder="Your email address" />
+              <form className="newsletter-form" onSubmit={(e) => { e.preventDefault(); alert('Thank you for subscribing!'); }}>
+                <input type="email" placeholder="Your email address" required />
                 <button type="submit">Subscribe</button>
               </form>
             </div>

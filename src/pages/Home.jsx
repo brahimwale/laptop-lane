@@ -6,13 +6,24 @@ import ProductCard from '../components/ProductCard'
 import QuickView from '../components/QuickView'
 import { CheckCircle, Truck, RotateCcw, Headphones } from 'lucide-react'
 import { staggerContainer, fadeInUp, staggerContainerHome } from '../utils/animationVariants'
+import { useToastStore } from '../store/toastStore'
 
 function Home() {
   const [quickViewProduct, setQuickViewProduct] = useState(null)
+  const [email, setEmail] = useState('')
+  const success = useToastStore(state => state.success)
   const featuredProducts = sampleProducts.filter(p => p.is_featured).slice(0, 4)
   const bestSellers = sampleProducts.filter(p => p.is_best_seller).slice(0, 4)
   const newArrivals = sampleProducts.filter(p => p.is_new_arrival).slice(0, 4)
   const onSale = sampleProducts.filter(p => p.sale_price).slice(0, 4)
+
+  const handleNewsletterSubmit = (e) => {
+    e.preventDefault()
+    if (email && email.includes('@')) {
+      success('Thank you for subscribing! Welcome to LaptopLane.')
+      setEmail('')
+    }
+  }
 
   return (
     <motion.div 
@@ -68,7 +79,7 @@ function Home() {
           <motion.div className="categories-grid" variants={staggerContainer}>
             {categories.slice(0, 6).map((cat, index) => (
               <motion.div key={cat.id} variants={fadeInUp} custom={index}>
-                <Link to={`/shop/${cat.slug}`} className="category-card">
+                <Link to={`/shop/${cat.slug}`} className={`category-card ${index === 0 ? 'featured' : ''}`}>
                   <div className="category-image">
                     <img src={cat.image} alt={cat.name} loading="lazy" />
                   </div>
@@ -227,10 +238,20 @@ function Home() {
           <motion.p variants={fadeInUp}>
             Subscribe to our newsletter for exclusive deals, new arrivals, and tech tips.
           </motion.p>
-          <motion.form className="newsletter-form-large" variants={fadeInUp}>
-            <input type="email" placeholder="Enter your email address" />
-            <button type="submit">Subscribe Now</button>
-          </motion.form>
+          <motion.form 
+              className="newsletter-form-large" 
+              variants={fadeInUp}
+              onSubmit={handleNewsletterSubmit}
+            >
+              <input 
+                type="email" 
+                placeholder="Enter your email address" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <button type="submit">Subscribe Now</button>
+            </motion.form>
         </div>
       </motion.section>
       <QuickView 

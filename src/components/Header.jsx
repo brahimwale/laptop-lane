@@ -118,7 +118,7 @@ function Header({ onCartClick, onAuthClick }) {
                     className="mega-menu-item"
                     onClick={() => setMegaMenuOpen(false)}
                   >
-                    <div className="mega-menu-icon">{cat.image ? '📁' : '📦'}</div>
+                    <div className="mega-menu-icon"><span>Laptop</span></div>
                     <div className="mega-menu-info">
                       <h4>{cat.name}</h4>
                       <p>{cat.description}</p>
